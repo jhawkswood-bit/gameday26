@@ -9,33 +9,22 @@
 <script crossorigin src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js"></script>
 <script src="https://unpkg.com/@babel/standalone@7.24.7/babel.min.js"></script>
 <script>
-/* Shared vote storage backed by jsonblob.com — every visitor reads and
-   writes the same blob, so the leaderboard is live for the whole group.
-   The blob URL is created once by the deploy workflow and committed
-   to blob.json alongside this page. */
-let __blobUrl = null;
-async function voteStoreUrl() {
-  if (!__blobUrl) {
-    const r = await fetch("./blob.json", { cache: "no-store" });
-    if (!r.ok) throw new Error("vote store not configured");
-    __blobUrl = (await r.json()).url;
-  }
-  return __blobUrl;
-}
+/* Shared vote storage on jsonblob.com — one store for the whole group,
+   so every visitor sees the same live leaderboard. The store was
+   created and round-trip tested before this page was deployed. */
+const VOTE_STORE_URL = "https://jsonblob.com/api/jsonBlob/019ebd2a-568a-7b09-8975-521620a5e817";
 window.storage = {
   async get(key) {
-    const url = await voteStoreUrl();
-    const r = await fetch(url, { headers: { Accept: "application/json" }, cache: "no-store" });
+    const r = await fetch(VOTE_STORE_URL, { headers: { Accept: "application/json" }, cache: "no-store" });
     if (!r.ok) throw new Error("vote store unreachable");
     const data = await r.json();
     return data[key] == null ? null : { value: data[key] };
   },
   async set(key, value) {
-    const url = await voteStoreUrl();
-    const r = await fetch(url, { headers: { Accept: "application/json" }, cache: "no-store" });
+    const r = await fetch(VOTE_STORE_URL, { headers: { Accept: "application/json" }, cache: "no-store" });
     const data = r.ok ? await r.json() : {};
     data[key] = value;
-    const put = await fetch(url, {
+    const put = await fetch(VOTE_STORE_URL, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data),
