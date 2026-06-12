@@ -356,6 +356,106 @@ const STATUS = {
 };
 const fmtGBP = (n) => "£" + n.toLocaleString("en-GB");
 
+/* ---------- team & city branding ---------- */
+const NFL_LOGO = (a) => "https://a.espncdn.com/i/teamlogos/nfl/500/" + a + ".png";
+const NCAA_LOGO = (id) => "https://a.espncdn.com/i/teamlogos/ncaa/500/" + id + ".png";
+const TEAM = {
+  "Houston Texans": { abbr: "HOU", logo: NFL_LOGO("hou") },
+  "Tennessee Titans": { abbr: "TEN", logo: NFL_LOGO("ten") },
+  "Chicago Bears": { abbr: "CHI", logo: NFL_LOGO("chi") },
+  "Atlanta Falcons": { abbr: "ATL", logo: NFL_LOGO("atl") },
+  "Tampa Bay Buccaneers": { abbr: "TB", logo: NFL_LOGO("tb") },
+  "San Francisco 49ers": { abbr: "SF", logo: NFL_LOGO("sf") },
+  "Dallas Cowboys": { abbr: "DAL", logo: NFL_LOGO("dal") },
+  "Pittsburgh Steelers": { abbr: "PIT", logo: NFL_LOGO("pit") },
+  "Philadelphia Eagles": { abbr: "PHI", logo: NFL_LOGO("phi") },
+  "Green Bay Packers": { abbr: "GB", logo: NFL_LOGO("gb") },
+  "New England Patriots": { abbr: "NE", logo: NFL_LOGO("ne") },
+  "Los Angeles Chargers": { abbr: "LAC", logo: NFL_LOGO("lac") },
+  "Los Angeles Rams": { abbr: "LAR", logo: NFL_LOGO("lar") },
+  "New Orleans Saints": { abbr: "NO", logo: NFL_LOGO("no") },
+  "Las Vegas Raiders": { abbr: "LV", logo: NFL_LOGO("lv") },
+  "Miami Dolphins": { abbr: "MIA", logo: NFL_LOGO("mia") },
+  "Detroit Lions": { abbr: "DET", logo: NFL_LOGO("det") },
+  "Jacksonville Jaguars": { abbr: "JAX", logo: NFL_LOGO("jax") },
+  "Cleveland Browns": { abbr: "CLE", logo: NFL_LOGO("cle") },
+  "Kansas City Chiefs": { abbr: "KC", logo: NFL_LOGO("kc") },
+  "Ole Miss": { abbr: "MISS", logo: NCAA_LOGO(145) },
+  "Vanderbilt": { abbr: "VAN", logo: NCAA_LOGO(238) },
+  "Auburn": { abbr: "AUB", logo: NCAA_LOGO(2) },
+  "Georgia": { abbr: "UGA", logo: NCAA_LOGO(61) },
+  "Miami": { abbr: "MIA", logo: NCAA_LOGO(2390) },
+  "Notre Dame": { abbr: "ND", logo: NCAA_LOGO(87) },
+  "Missouri": { abbr: "MIZ", logo: NCAA_LOGO(142) },
+  "Alabama": { abbr: "BAMA", logo: NCAA_LOGO(333) },
+  "Oklahoma": { abbr: "OU", logo: NCAA_LOGO(201) },
+  "Minnesota": { abbr: "MINN", logo: NCAA_LOGO(135) },
+  "Penn State": { abbr: "PSU", logo: NCAA_LOGO(213) },
+  "Florida State": { abbr: "FSU", logo: NCAA_LOGO(52) },
+  "Boston College": { abbr: "BC", logo: NCAA_LOGO(103) },
+  "Ohio State": { abbr: "OSU", logo: NCAA_LOGO(194) },
+  "USC": { abbr: "USC", logo: NCAA_LOGO(30) },
+  "LSU": { abbr: "LSU", logo: NCAA_LOGO(99) },
+  "Texas A&M": { abbr: "A&M", logo: NCAA_LOGO(245) },
+};
+const CITY = {
+  "Nashville": { icon: "🎸", tag: "Honky-tonks on Broadway · both stadiums on the Cumberland" },
+  "Atlanta": { icon: "🍑", tag: "Big-city base camp · SEC country on the doorstep" },
+  "Chicago": { icon: "🌆", tag: "Lakefront skyline · deep-dish and bears on the shore" },
+  "Dallas": { icon: "🤠", tag: "Texas-sized everything · the Jerry World spectacle" },
+  "Philadelphia": { icon: "🔔", tag: "Cheesesteaks and history · rowdiest fans in the league" },
+  "Boston": { icon: "🦞", tag: "Walkable and historic · pints in centuries-old taverns" },
+  "Los Angeles": { icon: "🌴", tag: "Sunshine and palm trees · two stadiums, twenty minutes" },
+  "Miami / Tampa": { icon: "🏖", tag: "South Beach to the Gulf · a proper road trip" },
+  "Miami": { icon: "🏖", tag: "Beach weather in November · the holiday-first weekend" },
+  "New Orleans": { icon: "⚜️", tag: "Bourbon Street base camp · best food city in America" },
+};
+/* light "matchday programme" palette */
+const L = { bg: "#EFEAD9", panel: "#FAF7ED", line: "#DCD4BE", ink: "#141823", sub: "#6E6A58" };
+
+const btnL = (active, disabled = false) => ({
+  flex: 1, padding: "9px 0", borderRadius: 4, cursor: disabled ? "default" : "pointer",
+  border: "1px solid " + (active ? C.red : "#B9B19A"),
+  background: active ? C.red : "transparent",
+  color: active ? "#FFFFFF" : disabled ? "#C8C0A8" : L.sub,
+  fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: "0.1em",
+  textTransform: "uppercase", opacity: disabled ? 0.5 : 1,
+});
+
+function TeamMark({ name, color }) {
+  const t = TEAM[name] || {};
+  return (
+    <span style={{
+      width: 32, height: 32, borderRadius: 16, background: "#FFFFFF",
+      border: "2px solid " + (color || "#888"), display: "inline-flex",
+      alignItems: "center", justifyContent: "center", flexShrink: 0, overflow: "hidden",
+      fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 10, color: "#222",
+      boxShadow: "0 1px 4px rgba(0,0,0,0.35)",
+    }}>
+      {t.logo ? (
+        <img src={t.logo} alt={name} width="24" height="24" loading="lazy"
+          style={{ objectFit: "contain" }}
+          onError={(e) => { e.target.replaceWith((t.abbr || "?").slice(0, 4)); }} />
+      ) : (t.abbr || "?").slice(0, 4)}
+    </span>
+  );
+}
+
+function MiniLogo({ name }) {
+  const t = TEAM[name];
+  if (!t) return null;
+  return (
+    <span style={{
+      width: 20, height: 20, borderRadius: 10, background: "#FFFFFF",
+      display: "inline-flex", alignItems: "center", justifyContent: "center",
+      overflow: "hidden", flexShrink: 0,
+    }}>
+      <img src={t.logo} alt="" width="15" height="15" loading="lazy" style={{ objectFit: "contain" }}
+        onError={(e) => { e.target.parentNode.style.display = "none"; }} />
+    </span>
+  );
+}
+
 /* ---------- shared vote storage ---------- */
 const VOTE_KEY = "gameday26-votes-v1";
 async function loadVotes() {
@@ -404,90 +504,97 @@ const togStyle = (on) => ({
   fontFamily: "'JetBrains Mono', monospace", fontSize: 11, letterSpacing: "0.06em",
 });
 
-/* ---------- fixture row ---------- */
+/* ---------- fixture row: team-colour matchup strip ---------- */
 function FixtureRow({ fx, tag }) {
   if (!fx) return (
-    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "10px 0", opacity: 0.45 }}>
-      <Mono style={{ color: C.dim, width: 30 }}>{tag}</Mono>
+    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "13px 14px", background: "#101828" }}>
+      <Mono style={{ color: C.dim, width: 28 }}>{tag}</Mono>
       <span style={{ fontFamily: "'Inter', sans-serif", fontSize: 12.5, color: C.dim, fontStyle: "italic" }}>No college fixture — single-game trip</span>
     </div>
   );
+  const confirmed = fx.kick && fx.kick.includes("confirmed");
   return (
-    <div style={{ display: "flex", alignItems: "stretch", gap: 10, padding: "9px 0" }}>
-      <div style={{ width: 4, borderRadius: 2, background: "linear-gradient(180deg, " + fx.awayC + ", " + fx.homeC + ")", flexShrink: 0 }} />
-      <div style={{ width: 30, display: "flex", alignItems: "center" }}>
-        <Mono style={{ color: tag === "SAT" ? C.gold : C.red }}>{tag}</Mono>
-      </div>
-      <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 600, fontSize: 15, color: C.chalk, textTransform: "uppercase", letterSpacing: "0.02em", lineHeight: 1.25 }}>
-          {fx.away} <span style={{ color: C.dim, fontWeight: 400, fontSize: 12 }}>at</span> {fx.home}
+    <div style={{ position: "relative", overflow: "hidden" }}>
+      <div aria-hidden style={{
+        position: "absolute", inset: 0,
+        background: "linear-gradient(100deg, " + fx.awayC + " 0%, " + fx.awayC + " 40%, " + fx.homeC + " 60%, " + fx.homeC + " 100%)",
+      }} />
+      <div aria-hidden style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg, rgba(8,13,24,0.16), rgba(8,13,24,0.46))" }} />
+      <div style={{ position: "relative", display: "flex", alignItems: "center", gap: 9, padding: "11px 12px" }}>
+        <Mono style={{ color: "#FFFFFFCC", width: 28, fontWeight: 700 }}>{tag}</Mono>
+        <TeamMark name={fx.away} color={fx.awayC} />
+        <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 15, color: "#FFFFFF", textTransform: "uppercase", letterSpacing: "0.02em", lineHeight: 1.25, textShadow: "0 1px 3px rgba(0,0,0,0.5)" }}>
+            {fx.away} <span style={{ opacity: 0.75, fontWeight: 400, fontSize: 11 }}>at</span> {fx.home}
+          </div>
+          <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: 9.5, letterSpacing: "0.07em", color: "#FFFFFFD9", marginTop: 3, textTransform: "uppercase", textShadow: "0 1px 2px rgba(0,0,0,0.5)" }}>
+            {fx.day} · {fx.venue}{fx.kick ? (confirmed ? " · ✓ " + fx.kick : " · " + fx.kick) : ""}
+          </div>
         </div>
-        <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11.5, color: C.dim, marginTop: 2 }}>
-          {fx.venue}
-        </div>
-        <div style={{ marginTop: 4, display: "flex", gap: 6, flexWrap: "wrap" }}>
-          <Chip color={C.dim}>{fx.day}</Chip>
-          <Chip color={fx.kick && fx.kick.includes("confirmed") ? C.green : C.dim}>{fx.kick}</Chip>
-        </div>
+        <TeamMark name={fx.home} color={fx.homeC} />
       </div>
     </div>
   );
 }
 
-/* ---------- option card (Slate) ---------- */
+/* ---------- option card (Slate): broadcast header, colour strips, programme body ---------- */
 function OptionCard({ o, expanded, onToggle, compared, onCompare, compareFull }) {
   const st = STATUS[o.status];
   const w = WEATHER[o.weather];
+  const city = CITY[o.city];
   return (
     <div style={{
-      background: C.panel, border: "1px solid " + (o.status === "locked" ? C.gold + "66" : C.line),
-      borderRadius: 8, overflow: "hidden", marginBottom: 14,
-      boxShadow: o.status === "locked" ? "0 0 24px " + C.gold + "18" : "0 2px 12px rgba(0,0,0,0.35)",
+      background: L.panel, border: "1px solid " + (o.status === "locked" ? C.gold : "#0A1226"),
+      borderRadius: 10, overflow: "hidden", marginBottom: 16,
+      boxShadow: o.status === "locked" ? "0 0 26px " + C.gold + "40" : "0 3px 14px rgba(0,0,0,0.5)",
     }}>
       <div style={{
         display: "flex", alignItems: "center", justifyContent: "space-between",
-        padding: "9px 14px", background: C.panelUp, borderBottom: "1px solid " + C.line,
+        padding: "9px 14px", background: "#0A1226", borderBottom: "2px solid " + C.red,
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 0 }}>
           <Mono style={{ color: C.red, fontWeight: 700 }}>{o.week}</Mono>
           <Mono style={{ color: C.dim }}>{o.window}</Mono>
         </div>
         <Mono style={{ color: st.color, fontWeight: 700 }}>{st.label}</Mono>
       </div>
 
-      <div style={{ padding: "12px 14px 13px" }}>
+      <FixtureRow fx={o.college} tag="SAT" />
+      <div style={{ height: 2, background: "#0A1226" }} />
+      <FixtureRow fx={o.nfl} tag="SUN" />
+
+      <div style={{ padding: "12px 14px 13px", borderTop: "2px solid #0A1226" }}>
         <h3 style={{
           margin: 0, fontFamily: "'Oswald', sans-serif", fontWeight: 700,
-          fontSize: 21, color: C.chalk, textTransform: "uppercase", letterSpacing: "0.015em",
+          fontSize: 20, color: L.ink, textTransform: "uppercase", letterSpacing: "0.015em",
         }}>{o.title}</h3>
+        {city && (
+          <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: L.sub, marginTop: 4, lineHeight: 1.4 }}>
+            {city.icon} {city.tag}
+          </div>
+        )}
 
-        <div style={{ marginTop: 8 }}>
-          <FixtureRow fx={o.college} tag="SAT" />
-          <div style={{ height: 1, background: C.line, margin: "1px 0" }} />
-          <FixtureRow fx={o.nfl} tag="SUN" />
-        </div>
-
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 8 }}>
+        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 10 }}>
           {o.fare
-            ? <Chip color={C.gold} filled><b style={{ fontSize: 12 }}>{fmtGBP(o.fare)}</b>&nbsp;return</Chip>
-            : <Chip color={C.dim}>Fare TBC</Chip>}
-          {o.avios && <Chip color={C.gold}>{o.avios.pts} Avios + {fmtGBP(o.avios.fees)}</Chip>}
+            ? <Chip color="#8A6D00" filled><b style={{ fontSize: 12 }}>{fmtGBP(o.fare)}</b>&nbsp;return</Chip>
+            : <Chip color={L.sub}>Fare TBC</Chip>}
+          {o.avios && <Chip color="#8A6D00">{o.avios.pts} Avios + {fmtGBP(o.avios.fees)}</Chip>}
           <Chip color={w.color} filled>{w.label}</Chip>
-          <Chip color={C.dim}>{o.drive}</Chip>
+          <Chip color={L.sub}>{o.drive}</Chip>
         </div>
 
         {o.tickets && (
           <div style={{
             marginTop: 10, padding: "8px 10px", borderRadius: 4,
-            background: C.gold + "14", border: "1px solid " + C.gold + "44",
-            fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.gold,
+            background: "#F3E7C2", border: "1px solid " + C.gold,
+            fontFamily: "'Inter', sans-serif", fontSize: 12, color: "#7A5E00",
           }}>🎟 {o.tickets}</div>
         )}
 
         {o.caveats.length > 0 && (
           <div style={{ marginTop: 9 }}>
             {o.caveats.map((c, i) => (
-              <div key={i} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11.5, color: C.amber, lineHeight: 1.45, display: "flex", gap: 6 }}>
+              <div key={i} style={{ fontFamily: "'Inter', sans-serif", fontSize: 11.5, color: "#A05E12", lineHeight: 1.45, display: "flex", gap: 6 }}>
                 <span>⚠</span><span>{c}</span>
               </div>
             ))}
@@ -496,27 +603,27 @@ function OptionCard({ o, expanded, onToggle, compared, onCompare, compareFull })
 
         {expanded && (
           <div style={{
-            marginTop: 11, paddingTop: 11, borderTop: "1px dashed " + C.line,
-            fontFamily: "'Inter', sans-serif", fontSize: 13, color: C.chalk, lineHeight: 1.55,
+            marginTop: 11, paddingTop: 11, borderTop: "1px dashed " + L.line,
+            fontFamily: "'Inter', sans-serif", fontSize: 13, color: L.ink, lineHeight: 1.55,
           }}>
             {o.notes}
             {o.airline && (
-              <div style={{ marginTop: 7, fontSize: 12, color: C.dim }}>✈ {o.airline}</div>
+              <div style={{ marginTop: 7, fontSize: 12, color: L.sub }}>✈ {o.airline}</div>
             )}
             {o.avios && (
-              <div style={{ marginTop: 4, fontSize: 12, color: C.dim }}>◆ Avios cabin: {o.avios.cabin}</div>
+              <div style={{ marginTop: 4, fontSize: 12, color: L.sub }}>◆ Avios cabin: {o.avios.cabin}</div>
             )}
           </div>
         )}
 
         <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
-          <button onClick={onToggle} style={btnStyle(false)}>
+          <button onClick={onToggle} style={btnL(false)}>
             {expanded ? "Hide details" : "Details"}
           </button>
           <button
             onClick={onCompare}
             disabled={!compared && compareFull}
-            style={btnStyle(compared, !compared && compareFull)}
+            style={btnL(compared, !compared && compareFull)}
           >
             {compared ? "✓ In comparison" : "Compare"}
           </button>
@@ -545,8 +652,8 @@ function GameRow({ g, picked, verdict, onPick }) {
       }}>
       <div style={{ width: 4, borderRadius: 2, background: "linear-gradient(180deg, " + g.awayC + ", " + g.homeC + ")", flexShrink: 0 }} />
       <div style={{ flex: 1, minWidth: 0 }}>
-        <div style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 600, fontSize: 14, color: C.chalk, textTransform: "uppercase", lineHeight: 1.25 }}>
-          {g.away} <span style={{ color: C.dim, fontWeight: 400, fontSize: 11 }}>at</span> {g.home}
+        <div style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 600, fontSize: 14, color: C.chalk, textTransform: "uppercase", lineHeight: 1.25, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
+          <MiniLogo name={g.away} /> {g.away} <span style={{ color: C.dim, fontWeight: 400, fontSize: 11 }}>at</span> <MiniLogo name={g.home} /> {g.home}
         </div>
         <div style={{ fontFamily: "'Inter', sans-serif", fontSize: 11, color: C.dim, marginTop: 2 }}>
           {g.label} · {g.venue}, {g.town}
@@ -728,7 +835,7 @@ function BuildView({ top3, setTop3, goVote }) {
 
 /* ---------- comparison ---------- */
 const thStyle = { textAlign: "left", padding: "8px 10px", borderBottom: "2px solid " + C.red, verticalAlign: "bottom" };
-const tdStyle = { padding: "9px 10px", borderBottom: "1px solid " + C.line, fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.chalk, lineHeight: 1.4, verticalAlign: "top" };
+const tdStyle = { padding: "9px 10px", borderBottom: "1px solid " + L.line, fontFamily: "'Inter', sans-serif", fontSize: 12, color: L.ink, lineHeight: 1.4, verticalAlign: "top" };
 
 function CompareView({ ids, clear }) {
   const picks = OPTIONS.filter((o) => ids.includes(o.id));
@@ -754,13 +861,13 @@ function CompareView({ ids, clear }) {
         <Mono style={{ color: C.dim }}>HEAD-TO-HEAD · {picks.length} SELECTED</Mono>
         <button onClick={clear} style={{ ...btnStyle(false), flex: "none", padding: "6px 12px" }}>Clear</button>
       </div>
-      <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch" }}>
+      <div style={{ overflowX: "auto", WebkitOverflowScrolling: "touch", background: L.panel, border: "1px solid " + L.line, borderRadius: 10, padding: "4px 12px 10px", boxShadow: "0 3px 14px rgba(0,0,0,0.45)" }}>
         <table style={{ borderCollapse: "collapse", minWidth: picks.length * 165 + 90 }}>
           <thead>
             <tr>
               <th style={thStyle}></th>
               {picks.map((o) => (
-                <th key={o.id} style={{ ...thStyle, color: C.chalk }}>
+                <th key={o.id} style={{ ...thStyle, color: L.ink }}>
                   <div style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 14, textTransform: "uppercase", lineHeight: 1.25 }}>{o.title}</div>
                   <Mono style={{ color: C.red }}>{o.week}</Mono>
                 </th>
@@ -769,8 +876,8 @@ function CompareView({ ids, clear }) {
           </thead>
           <tbody>
             {rows.map(([label, fn], i) => (
-              <tr key={i} style={{ background: i % 2 ? "transparent" : C.panel }}>
-                <td style={{ ...tdStyle, color: C.dim, fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{label}</td>
+              <tr key={i} style={{ background: i % 2 ? "transparent" : "#F1ECDC" }}>
+                <td style={{ ...tdStyle, color: L.sub, fontFamily: "'JetBrains Mono', monospace", fontSize: 10, letterSpacing: "0.1em", textTransform: "uppercase", whiteSpace: "nowrap" }}>{label}</td>
                 {picks.map((o) => (
                   <td key={o.id} style={tdStyle}>{fn(o)}</td>
                 ))}
@@ -890,33 +997,38 @@ function VoteView({ top3, setTop3 }) {
         {msg && <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 12, color: C.gold, marginTop: 10, marginBottom: 0 }}>{msg}</p>}
       </div>
 
-      <Mono style={{ color: C.dim }}>THE BOARD · {voterCount} VOTE{voterCount === 1 ? "" : "S"} IN</Mono>
-      {votes === null && <p style={{ color: C.dim, fontFamily: "'Inter', sans-serif", fontSize: 13, marginTop: 10 }}>Loading the board…</p>}
-      {votes !== null && board.length === 0 && (
-        <p style={{ color: C.dim, fontFamily: "'Inter', sans-serif", fontSize: 13, marginTop: 10 }}>No votes yet. History awaits.</p>
-      )}
-      <div style={{ marginTop: 10 }}>
-        {board.map(({ o, p }, i) => (
-          <div key={o.id} style={{
-            display: "flex", alignItems: "center", gap: 12, padding: "11px 13px",
-            background: i === 0 ? C.gold + "12" : C.panel,
-            border: "1px solid " + (i === 0 ? C.gold + "55" : C.line),
-            borderRadius: 6, marginBottom: 7,
-          }}>
-            <span style={{
-              fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 22,
-              color: i === 0 ? C.gold : C.dim, width: 28, textAlign: "center",
-            }}>{i + 1}</span>
-            <div style={{ flex: 1 }}>
-              <div style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 600, fontSize: 15, color: C.chalk, textTransform: "uppercase" }}>{o.title}</div>
-              <Mono style={{ color: C.dim }}>{o.week} · {o.window}</Mono>
+      <div style={{ background: L.panel, border: "1px solid " + L.line, borderRadius: 10, padding: "14px 14px 8px", boxShadow: "0 3px 14px rgba(0,0,0,0.45)" }}>
+        <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", borderBottom: "3px solid " + C.red, paddingBottom: 8 }}>
+          <span style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 18, color: L.ink, textTransform: "uppercase", letterSpacing: "0.02em" }}>The Board</span>
+          <Mono style={{ color: L.sub }}>{voterCount} VOTE{voterCount === 1 ? "" : "S"} IN</Mono>
+        </div>
+        {votes === null && <p style={{ color: L.sub, fontFamily: "'Inter', sans-serif", fontSize: 13, padding: "12px 0" }}>Loading the board…</p>}
+        {votes !== null && board.length === 0 && (
+          <p style={{ color: L.sub, fontFamily: "'Inter', sans-serif", fontSize: 13, padding: "12px 0" }}>No votes yet. History awaits.</p>
+        )}
+        <div style={{ paddingTop: 10 }}>
+          {board.map(({ o, p }, i) => (
+            <div key={o.id} style={{
+              display: "flex", alignItems: "center", gap: 12, padding: "11px 13px",
+              background: i === 0 ? "#F5E9C4" : "#FFFFFF",
+              border: "1px solid " + (i === 0 ? C.gold : L.line),
+              borderRadius: 6, marginBottom: 7,
+            }}>
+              <span style={{
+                fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 22,
+                color: i === 0 ? "#A77B00" : L.sub, width: 28, textAlign: "center",
+              }}>{i + 1}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 600, fontSize: 15, color: L.ink, textTransform: "uppercase" }}>{o.title}</div>
+                <Mono style={{ color: L.sub }}>{o.week} · {o.window}</Mono>
+              </div>
+              <div style={{ textAlign: "right" }}>
+                <div style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 19, color: i === 0 ? "#A77B00" : L.ink }}>{p}</div>
+                <Mono style={{ color: L.sub }}>PTS</Mono>
+              </div>
             </div>
-            <div style={{ textAlign: "right" }}>
-              <div style={{ fontFamily: "'Oswald', sans-serif", fontWeight: 700, fontSize: 19, color: i === 0 ? C.gold : C.chalk }}>{p}</div>
-              <Mono style={{ color: C.dim }}>PTS</Mono>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -991,7 +1103,11 @@ function App() {
           <p style={{ fontFamily: "'Inter', sans-serif", fontSize: 13, color: C.dim, margin: "10px 0 0", maxWidth: 420, lineHeight: 1.55 }}>
             Fifteen doubleheader weekends. One Saturday in college football's cathedrals, one Sunday in the NFL. Build your three, compare them, vote them in.
           </p>
-          <div style={{ display: "flex", gap: 6, marginTop: 14, flexWrap: "wrap" }}>
+          <div style={{ display: "flex", gap: 6, marginTop: 12, flexWrap: "wrap" }}>
+            <Chip color={C.gold} filled>SATURDAY · COLLEGE</Chip>
+            <Chip color={C.red} filled>SUNDAY · NFL</Chip>
+          </div>
+          <div style={{ display: "flex", gap: 6, marginTop: 8, flexWrap: "wrap" }}>
             <Chip color={C.gold} filled>NYC '23</Chip>
             <Chip color={C.gold} filled>HOUSTON '24</Chip>
             <Chip color={C.gold} filled>DENVER '25</Chip>
